@@ -4,11 +4,9 @@ import random
 import time
 
 np.random.seed(5)
-#step = 1
+
 a = 49000
 batch_size = 4900
-# = 63816 
-#atch_size = 31908 
 # dropout (keep_prob) rate  0.7~0.5 on training, but should be 1 for testing
 #keep_prob = tf.placeholder(tf.float32)
 
@@ -18,7 +16,7 @@ P = np.loadtxt('merge_print_PF.csv', delimiter = ',', dtype = np.float32)
 
 x_data = train[1:49001,1:-1]
 x_data = x_data.reshape([-1,8,8,4])
-#x_data = x_data.reshape(-1,8,8,4)
+
 max_x_0 = np.max(x_data[:,:,:,0]); min_x_0 = np.min(x_data[:,:,:,0])
 max_x_1 = np.max(x_data[:,:,:,1]); min_x_1 = np.min(x_data[:,:,:,1])
 max_x_2 = np.max(x_data[:,:,:,2]); min_x_2 = np.min(x_data[:,:,:,2])
@@ -28,20 +26,22 @@ norm0=(x_data[:,:,:,0] - min_x_0)/(max_x_0 - min_x_0)
 norm1=(x_data[:,:,:,1] - min_x_1)/(max_x_1 - min_x_1)
 norm2=(x_data[:,:,:,2] - min_x_2)/(max_x_2 - min_x_2)
 norm3=(x_data[:,:,:,3] - min_x_3)/(max_x_3 - min_x_3)
+
 x_data[:,:,:,0]=norm0
 x_data[:,:,:,1]=norm1
 x_data[:,:,:,2]=norm2
 x_data[:,:,:,3]=norm3
-#x_data=x_data.reshape([-1,192])
+
 x_data = x_data.reshape([-1,256])
 
 x_test = test[1:7001,1:-1]
 x_test = x_test.reshape([-1,8,8,4])
-#x_test = x_test.reshape(-1,8,8,4)
+
 norm0=(x_test[:,:,:,0] - min_x_0)/(max_x_0 - min_x_0)
 norm1=(x_test[:,:,:,1] - min_x_1)/(max_x_1 - min_x_1)
 norm2=(x_test[:,:,:,2] - min_x_2)/(max_x_2 - min_x_2)
 norm3=(x_test[:,:,:,3] - min_x_3)/(max_x_3 - min_x_3)
+
 x_test[:,:,:,0]=norm0
 x_test[:,:,:,1]=norm1
 x_test[:,:,:,2]=norm2
@@ -50,16 +50,18 @@ x_test=x_test.reshape([-1,256])
 
 x_P = P[1:14001,1:-1]
 x_P = x_P.reshape([-1,8,8,4])
+
 norm0=(x_P[:,:,:,0] - min_x_0)/(max_x_0 - min_x_0)
 norm1=(x_P[:,:,:,1] - min_x_1)/(max_x_1 - min_x_1)
 norm2=(x_P[:,:,:,2] - min_x_2)/(max_x_2 - min_x_2)
 norm3=(x_P[:,:,:,3] - min_x_3)/(max_x_3 - min_x_3)
+
 x_P[:,:,:,0]=norm0
 x_P[:,:,:,1]=norm1
 x_P[:,:,:,2]=norm2
 x_P[:,:,:,3]=norm3
 x_P=x_P.reshape([-1,256])
-#x_data_tf=tf.reshape(x_data, [-1,192])
+
 y_data = train[1:49001,[-1]]
 y_data = y_data.reshape([-1,1])
 max_y = np.max(y_data)
@@ -71,22 +73,18 @@ y_test = test[1:7001,[-1]]
 y_test = y_test.reshape([-1,1])
 y_test = (y_test - min_y)/(max_y - min_y)
 
-
 y_P = P[1:14001,[-1]]
 y_P = y_P.reshape([-1,1])
 y_P = (y_P - min_y)/(max_y - min_y)
+
 # input place holders
 X = tf.placeholder(tf.float32, [None, 256], name = 'pf_X')
 X_img = tf.reshape(X, [-1, 8, 8, 4], name = 'pf_X_img')
 Y = tf.placeholder(tf.float32, [None, 1], name = 'pf_Y')
 #phase = tf.placeholder(tf.bool, name='pf_phase')
-#Max_Y = tf.placeholder(tf.float32)
-#Min_Y = tf.placeholder(tf.float32)
 
 def conv(x_input, num_filter, kernel_size, name_conv1, name_relu1):
-    #lambda_reg = 0.0001
-    #regularizer = tf.contrib.layers.l2_regularizer(lambda_reg)
-
+    
     #conv = tf.layers.conv2d(inputs = x_input, filters = num_filter, kernel_size=[kernel_size,kernel_size], padding="SAME", strides=1, name = name_conv1,
     #                        kernel_initializer=tf.contrib.layers.xavier_initializer(), kernel_regularizer=regularizer)
     conv = tf.layers.conv2d(inputs = x_input, filters = num_filter, kernel_size=[kernel_size,kernel_size], padding="SAME", strides=1, name = name_conv1)
@@ -95,8 +93,6 @@ def conv(x_input, num_filter, kernel_size, name_conv1, name_relu1):
     return relu
 
 def conv_res(x_input, shortcut, num_filter, kernel_size, name_conv1, name_relu1):
-    #lambda_reg = 0.0001
-    #regularizer = tf.contrib.layers.l2_regularizer(lambda_reg)
     
     #conv = tf.layers.conv2d(inputs = x_input, filters = num_filter, kernel_size=[kernel_size,kernel_size], padding="SAME", strides=1, name = name_conv1,
     #                        kernel_initializer=tf.contrib.layers.xavier_initializer(), kernel_regularizer=regularizer)
