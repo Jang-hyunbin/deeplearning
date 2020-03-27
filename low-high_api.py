@@ -13,3 +13,9 @@ def conv(x_input, num_filter, kernel_size, name_conv1, name_relu1):
     return relu
 
 conv1 = conv(X_img, 64, 3, 'pf_conv1', 'pf_relu1')
+
+
+
+
+
+
